@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipping & Vaulting — Element Vault Enterprise</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--black:#0a0a0a;--dark:#141414;--panel:#1c1c1c;--border:#2a2a2a;--muted:#555;--mid:#888;--light:#ccc;--white:#f5f5f5;--gold:#c9a84c;--gold2:#e8c97a;--green:#5a9e6f;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:var(--black);position:sticky;top:0;z-index:100;}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.12em;color:var(--gold);text-decoration:none;}
+  .nav-logo span{color:var(--white);}
+  .nav-links{display:flex;gap:28px;list-style:none;}
+  .nav-links a{color:var(--mid);text-decoration:none;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s;}
+  .nav-links a:hover{color:var(--gold);}
+
+  .page-wrap{max-width:900px;margin:0 auto;padding:60px 40px;}
+
+  .page-eyebrow{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px;}
+  .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,64px);letter-spacing:0.04em;color:var(--white);line-height:1;margin-bottom:16px;}
+  .page-intro{font-size:15px;color:var(--mid);line-height:1.8;max-width:680px;margin-bottom:60px;border-left:2px solid var(--gold);padding-left:20px;}
+
+  /* POLICY BLOCKS */
+  .policy-section{margin-bottom:56px;}
+  .policy-section-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .policy-section-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--border);line-height:1;flex-shrink:0;}
+  .policy-section-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.06em;color:var(--white);}
+  .policy-body{color:var(--light);font-size:14px;line-height:1.9;}
+  .policy-body p{margin-bottom:16px;}
+  .policy-body p:last-child{margin-bottom:0;}
+  .policy-body strong{color:var(--white);}
+
+  /* PATH CARDS */
+  .path-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:24px 0;}
+  .path-card{background:var(--dark);border:1px solid var(--border);padding:28px 22px;position:relative;overflow:hidden;}
+  .path-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);}
+  .path-card.vault::after{background:linear-gradient(90deg,var(--green),transparent);}
+  .path-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--border);line-height:1;margin-bottom:10px;}
+  .path-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+  .path-card.vault .path-title{color:var(--green);}
+  .path-body{font-size:13px;color:var(--mid);line-height:1.7;}
+
+  /* VAULT HIGHLIGHT */
+  .vault-box{background:var(--dark);border:1px solid var(--border);border-left:3px solid var(--green);padding:28px 28px;margin:28px 0;}
+  .vault-box-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--green);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:14px;}
+  .vault-box-body{font-size:14px;color:var(--light);line-height:1.9;}
+  .vault-box-body p{margin-bottom:12px;}
+  .vault-box-body p:last-child{margin-bottom:0;}
+
+  /* TIMELINE */
+  .timeline{margin:28px 0;}
+  .timeline-item{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid var(--border);}
+  .timeline-item:last-child{border-bottom:none;}
+  .timeline-marker{flex-shrink:0;width:36px;height:36px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);font-weight:700;}
+  .timeline-content{}
+  .timeline-title{font-family:'Space Mono',monospace;font-size:11px;color:var(--white);font-weight:700;letter-spacing:0.06em;margin-bottom:4px;}
+  .timeline-body{font-size:13px;color:var(--mid);line-height:1.7;}
+
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+  .faq-q{font-family:'Space Mono',monospace;font-size:12px;color:var(--white);font-weight:700;letter-spacing:0.04em;margin-bottom:10px;}
+  .faq-a{font-size:13px;color:var(--mid);line-height:1.8;}
+
+  /* CONTACT CTA */
+  .contact-cta{background:var(--dark);border:1px solid var(--border);padding:36px;text-align:center;margin-top:60px;}
+  .contact-cta-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:var(--white);margin-bottom:10px;}
+  .contact-cta-body{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.7;}
+  .contact-btn{display:inline-block;background:var(--gold);color:var(--black);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:12px 28px;text-decoration:none;transition:background 0.2s;}
+  .contact-btn:hover{background:var(--gold2);}
+
+  footer{border-top:1px solid var(--border);padding:36px 40px;max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:0.12em;}
+  .footer-copy{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+
+  @media(max-width:700px){nav{padding:14px 20px;}.nav-links{display:none;}.page-wrap{padding:40px 20px;}.path-grid{grid-template-columns:1fr;}footer{flex-direction:column;text-align:center;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span>ELEMENT</span> VAULT</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Shop</a></li>
+    <li><a href="serials.html">Serial Registry</a></li>
+    <li><a href="shipping.html" style="color:var(--gold)">Shipping & Vaulting</a></li>
+    <li><a href="index.html#why">Why Physical?</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+
+  <p class="page-eyebrow">// Fulfilment & Storage Policy</p>
+  <h1 class="page-title">Shipping &<br>Vaulting</h1>
+  <p class="page-intro">At Element Vault Enterprise, your metal is yours from the moment payment clears — serialised, certified, and allocated in your name. How and when it moves is entirely on your terms. There is no pressure to solve a logistics question at the moment of purchase.</p>
+
+  <!-- SECTION 1: YOUR METAL, YOUR CALL -->
+  <div class="policy-section">
+    <div class="policy-section-header">
+      <div class="policy-section-num">01</div>
+      <div class="policy-section-title">Three Paths to Your Metal</div>
+    </div>
+    <div class="policy-body">
+      <p>Every order follows the same first steps — payment clears, your items are created, hallmarked, serialised, and placed in secure vault storage at the refinery of origin. Serial numbers and a vault location certificate are issued to you, typically within <strong>14 business days</strong>. What happens next is your choice.</p>
+    </div>
+
+    <div class="path-grid">
+      <div class="path-card">
+        <div class="path-num">A</div>
+        <div class="path-title">Ship It</div>
+        <div class="path-body">Commission your own freight forwarder and we coordinate with them directly. Your forwarder invoices you. We handle all documentation, export paperwork, and handoff at the refinery.</div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">B</div>
+        <div class="path-title">We Organise It</div>
+        <div class="path-body">Let us arrange freight through our own logistics providers. We'll present you with a freight quote for your approval before anything moves. You pay the freight invoice on approval — nothing dispatches without your sign-off.</div>
+      </div>
+      <div class="path-card vault">
+        <div class="path-num">C</div>
+        <div class="path-title">Leave It Vaulted</div>
+        <div class="path-body">No decision needed at checkout. Your metal stays at the refinery vault, fully allocated and insured in your name, at no charge for the first 6 months. Decide later.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: THE VAULT -->
+  <div class="policy-section">
+    <div class="policy-section-header">
+      <div class="policy-section-num">02</div>
+      <div class="policy-section-title">The Vault</div>
+    </div>
+    <div class="policy-body">
+      <p>All metal is held at the <strong>refinery of origin</strong> — the same facility where it was cast, hallmarked, and serialised. This is the closest point to manufacture in the chain of custody, meaning your metal has never been unnecessarily moved or handled.</p>
+    </div>
+
+    <div class="vault-box">
+      <div class="vault-box-title">Vault Standards</div>
+      <div class="vault-box-body">
+        <p><strong>Third-party audited.</strong> The vault is independently audited on a regular basis. Audit reports are available to clients holding vaulted metal on request.</p>
+        <p><strong>Fully allocated.</strong> Your metal is not pooled or commingled. Each item is individually identified by its serial number and held in your name from the moment of creation.</p>
+        <p><strong>Certified.</strong> You receive a vault location certificate alongside your serial documentation. This certificate identifies the facility, the items held, and the date of allocation.</p>
+        <p><strong>Insured.</strong> Metal held in vault is covered under the facility's insurance. Details available on request for large holdings.</p>
+      </div>
+    </div>
+
+    <div class="policy-body" style="margin-top:20px;">
+      <p>Clients may also nominate an alternative vault of their choice — a private facility, a bonded warehouse, or another institution. In this case, freight to the alternative vault is at the buyer's expense and arranged through either of the freight paths above.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: TIMELINE -->
+  <div class="policy-section">
+    <div class="policy-section-header">
+      <div class="policy-section-num">03</div>
+      <div class="policy-section-title">What Happens When</div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-marker">D0</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Order Placed & Payment Clears</div>
+          <div class="timeline-body">Your order is confirmed and reference number issued immediately. Metal is allocated to your account from this moment.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker">D1–14</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Creation & Hallmarking</div>
+          <div class="timeline-body">Items are cast, finished, and hallmarked at the refinery. Serial numbers are generated from our registry and applied to each piece. This typically completes within 14 business days.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker">D14</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Serial & Vault Certificate Issued</div>
+          <div class="timeline-body">Your full serial range and vault location certificate are sent to the email address on your order. Your metal is now fully documented and physically held in your name.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker">D14+</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Freight or Extended Vaulting</div>
+          <div class="timeline-body">At any point after certification, contact us to arrange outbound freight — either your own forwarder or through our logistics providers. Or leave it vaulted at no charge for up to 6 months from your purchase date.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker">M6</div>
+        <div class="timeline-content">
+          <div class="timeline-title">6-Month Complimentary Vaulting Ends</div>
+          <div class="timeline-body">We'll contact you ahead of this date. Extended vaulting beyond 6 months is available by arrangement — contact us to discuss terms. There is no automatic disposal or penalty; we simply need to agree on ongoing arrangements.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: WORLDWIDE SHIPPING -->
+  <div class="policy-section">
+    <div class="policy-section-header">
+      <div class="policy-section-num">04</div>
+      <div class="policy-section-title">Worldwide Shipping</div>
+    </div>
+    <div class="policy-body">
+      <p>Element Vault Enterprise ships to <strong>any country that legally permits the import of refined non-precious metals</strong>. We work with FedEx and DHL as preferred carriers for insured precious cargo, as well as specialist bullion freight providers for larger consignments.</p>
+      <p>When you choose to arrange freight through us, we will:</p>
+      <ul style="margin:12px 0 16px 20px;color:var(--light);font-size:14px;line-height:2;">
+        <li>Prepare all export documentation from the refinery</li>
+        <li>Obtain freight quotes from our providers</li>
+        <li>Present the quote to you for approval</li>
+        <li>Coordinate pickup, transit insurance, and delivery</li>
+        <li>Provide tracking from point of collection</li>
+      </ul>
+      <p>Nothing moves without your explicit approval of the freight cost. You are invoiced for freight separately from your purchase — there is no freight cost bundled into product pricing.</p>
+      <p><strong>Import duties and taxes</strong> are the buyer's responsibility and vary by destination country. We recommend checking your local customs requirements before arranging dispatch, particularly for larger consignments.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5: FAQ -->
+  <div class="policy-section">
+    <div class="policy-section-header">
+      <div class="policy-section-num">05</div>
+      <div class="policy-section-title">Common Questions</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need to decide on shipping at checkout?</div>
+      <div class="faq-a">No. You don't need to make any freight decision when you place your order. Your metal will be created, certified, and vaulted automatically. Contact us whenever you're ready to arrange dispatch.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if I want to use my own freight forwarder?</div>
+      <div class="faq-a">Absolutely fine. Simply send us your forwarder's contact and collection details and we'll coordinate directly with them for pickup from the refinery vault. All export paperwork is handled by us.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is my metal insured while vaulted?</div>
+      <div class="faq-a">Yes. Metal held at the refinery vault is covered under the facility's insurance policy. For holdings above a certain value, we can provide specific coverage details on request.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I visit the vault or arrange an inspection?</div>
+      <div class="faq-a">Vault visits and third-party inspections can be arranged. Contact us to discuss — we'll coordinate with the facility on your behalf.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What happens after the 6 months of complimentary vaulting?</div>
+      <div class="faq-a">We'll contact you before the 6-month mark to discuss your preferences. Extended vaulting is available by arrangement — contact us and we'll work out terms that suit your situation. There is no automatic penalty or disposal.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I prove ownership of my vaulted metal?</div>
+      <div class="faq-a">Your serial numbers are registered in our public registry the moment your order is confirmed. Your vault location certificate, issued within 14 business days, specifically names you as the allocated owner of each serialised item. Together these documents constitute your proof of ownership.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I sell my metal while it's still vaulted?</div>
+      <div class="faq-a">This depends on your jurisdiction's regulations around private metal sales. The serial registry and vault certificates make the transfer of ownership straightforward from a documentation standpoint. Contact us to discuss how we can assist with any transfer.</div>
+    </div>
+  </div>
+
+  <div class="contact-cta">
+    <div class="contact-cta-title">Questions About Your Order?</div>
+    <div class="contact-cta-body">Our team handles all freight coordination and vault enquiries directly. We're a small operation — you'll speak to a real person, not a ticketing system.</div>
+    <a href="mailto:samuelelfjr@gmail.com" class="contact-btn">Get in Touch →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">ELEMENT VAULT ENTERPRISE</div>
+  <div class="footer-copy">© 2026 Element Vault Enterprise · Shipping & Vaulting Policy</div>
+</footer>
+
+</body>
+</html>
