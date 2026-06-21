@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serial Registry — Element Vault Enterprise</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--black:#0a0a0a;--dark:#141414;--panel:#1c1c1c;--border:#2a2a2a;--muted:#555;--mid:#888;--light:#ccc;--white:#f5f5f5;--gold:#c9a84c;--gold2:#e8c97a;--green:#5a9e6f;}
+  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:var(--black);position:sticky;top:0;z-index:100;}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.12em;color:var(--gold);text-decoration:none;}
+  .nav-logo span{color:var(--white);}
+  .nav-links{display:flex;gap:28px;list-style:none;}
+  .nav-links a{color:var(--mid);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s;}
+  .nav-links a:hover{color:var(--white);}
+  .page-header{max-width:1200px;margin:0 auto;padding:48px 40px 32px;}
+  .page-eyebrow{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;}
+  .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,60px);letter-spacing:0.04em;color:var(--white);line-height:1;margin-bottom:12px;}
+  .page-sub{font-size:13px;color:var(--muted);max-width:560px;line-height:1.7;}
+  .controls{max-width:1200px;margin:0 auto;padding:0 40px 32px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .search-input{font-family:'Space Mono',monospace;font-size:12px;background:var(--panel);border:1px solid var(--border);color:var(--white);padding:10px 14px;outline:none;width:280px;transition:border-color 0.2s;}
+  .search-input:focus{border-color:var(--gold);}
+  .search-input::placeholder{color:var(--muted);}
+  .filter-btn{font-family:'Space Mono',monospace;font-size:10px;background:var(--panel);border:1px solid var(--border);color:var(--mid);padding:10px 14px;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.2s;}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+  .stats-bar{max-width:1200px;margin:0 auto;padding:0 40px 32px;display:flex;gap:2px;}
+  .stat-box{background:var(--dark);border:1px solid var(--border);padding:16px 24px;flex:1;}
+  .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);line-height:1;}
+  .stat-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;margin-top:4px;}
+  .table-wrap{max-width:1200px;margin:0 auto;padding:0 40px 60px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:700px;}
+  thead tr{background:var(--dark);border-bottom:2px solid var(--gold);}
+  th{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);padding:14px 16px;text-align:left;white-space:nowrap;}
+  tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
+  tbody tr:hover{background:rgba(201,168,76,0.03);}
+  td{padding:14px 16px;font-size:12px;vertical-align:middle;}
+  .td-ref{font-family:'Space Mono',monospace;font-size:10px;color:var(--mid);}
+  .td-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+  .td-sym{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+  .td-spec{font-size:11px;color:var(--light);}
+  .td-qty{font-family:'Space Mono',monospace;font-size:11px;color:var(--white);text-align:center;}
+  .td-serials{font-family:'Space Mono',monospace;font-size:10px;color:var(--green);line-height:1.8;}
+  .td-serials .range{color:var(--light);}
+  .empty-state{text-align:center;padding:80px 40px;}
+  .empty-icon{font-size:48px;margin-bottom:16px;}
+  .empty-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--muted);letter-spacing:0.08em;margin-bottom:8px;}
+  .empty-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+  footer{border-top:1px solid var(--border);padding:32px 40px;max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:0.12em;}
+  .footer-copy{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+  .footer-links{display:flex;gap:20px;list-style:none;}
+  .footer-links a{color:var(--muted);text-decoration:none;font-size:11px;transition:color 0.2s;}
+  .footer-links a:hover{color:var(--white);}
+  @media(max-width:600px){nav{padding:14px 20px;}.nav-links{display:none;}.page-header,.controls,.stats-bar,.table-wrap{padding-left:20px;padding-right:20px;}.stats-bar{flex-wrap:wrap;}footer{flex-direction:column;text-align:center;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html"><span>ELEMENT</span> VAULT</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Shop</a></li>
+    <li><a href="serials.html" style="color:var(--gold)">Serial Registry</a></li>
+    <li><a href="shipping.html">Shipping & Vaulting</a></li>
+    <li><a href="admin.html">Admin</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-eyebrow">// Public Record</div>
+  <h1 class="page-title">Serial Registry</h1>
+  <p class="page-sub">Every serial number issued by Element Vault Enterprise is recorded here at the moment of order. Search by reference number, metal symbol, or serial to verify authenticity.</p>
+</div>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-box"><div class="stat-val" id="statOrders">—</div><div class="stat-label">TOTAL ORDERS</div></div>
+  <div class="stat-box"><div class="stat-val" id="statItems">—</div><div class="stat-label">SERIAL RANGES ISSUED</div></div>
+  <div class="stat-box"><div class="stat-val" id="statPieces">—</div><div class="stat-label">TOTAL PIECES ALLOCATED</div></div>
+  <div class="stat-box"><div class="stat-val" id="statMetals">—</div><div class="stat-label">METALS ON REGISTRY</div></div>
+</div>
+
+<div class="controls">
+  <input type="text" class="search-input" id="searchInput" placeholder="Search ref, serial, metal...">
+  <div id="filterBtns" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+</div>
+
+<div class="table-wrap">
+  <div id="tableContainer"></div>
+</div>
+
+<footer>
+  <div class="footer-logo">ELEMENT VAULT ENTERPRISE</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Shop</a></li>
+    <li><a href="admin.html">Admin</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Element Vault Enterprise · Serial Registry</div>
+</footer>
+
+<script>
+// ── APPS SCRIPT ENDPOINT — same URL as index.html ───────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDkoDxCeQkeD-sUdtunfpbWo-P0GleEtwnqPA0sDoTrtbcokN5hKbfCTAm4R10gcrf/exec';
+
+let registry = [];
+let activeFilter = 'ALL';
+
+function formatDate(iso){
+  try { const d=new Date(iso); return d.toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}); }
+  catch { return iso; }
+}
+
+function showLoading(){
+  document.getElementById('tableContainer').innerHTML=`
+    <div class="empty-state">
+      <div class="empty-icon">⟳</div>
+      <div class="empty-title" style="color:var(--mid)">Loading Registry...</div>
+      <div class="empty-sub">Fetching from Element Vault servers.</div>
+    </div>`;
+}
+
+function renderStats(){
+  const refs   = new Set(registry.map(r=>r['Order Ref']||r.ref));
+  const pieces = registry.reduce((s,r)=>s+(parseInt(r['Qty']||r.qty)||0),0);
+  const syms   = new Set(registry.map(r=>r['Metal']||r.sym));
+  document.getElementById('statOrders').textContent  = refs.size   || '0';
+  document.getElementById('statItems').textContent   = registry.length || '0';
+  document.getElementById('statPieces').textContent  = pieces      || '0';
+  document.getElementById('statMetals').textContent  = syms.size   || '0';
+}
+
+function normalise(r){
+  // Handle both Sheets column names and localStorage field names
+  return {
+    date:       r['Date']        || r.date        || '',
+    ref:        r['Order Ref']   || r.ref         || '',
+    sym:        r['Metal']       || r.sym         || '',
+    spec:       r['Spec']        || r.spec        || '',
+    qty:        parseInt(r['Qty']|| r.qty)        || 1,
+    serialFrom: r['Serial From'] || r.serialFrom  || '',
+    serialTo:   r['Serial To']   || r.serialTo    || '',
+  };
+}
+
+function renderFilters(){
+  const syms=['ALL',...new Set(registry.map(r=>normalise(r).sym).filter(Boolean))];
+  document.getElementById('filterBtns').innerHTML=syms.map(s=>`
+    <button class="filter-btn${s===activeFilter?' active':''}" onclick="setFilter('${s}')">${s}</button>
+  `).join('');
+}
+
+function setFilter(sym){activeFilter=sym;renderFilters();renderTable();}
+
+function renderTable(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const container = document.getElementById('tableContainer');
+  const rows = registry
+    .map(normalise)
+    .filter(r => {
+      const matchFilter = activeFilter==='ALL' || r.sym===activeFilter;
+      const matchSearch = !q ||
+        r.ref.toLowerCase().includes(q) ||
+        r.sym.toLowerCase().includes(q) ||
+        r.serialFrom.toLowerCase().includes(q) ||
+        r.serialTo.toLowerCase().includes(q) ||
+        r.spec.toLowerCase().includes(q);
+      return matchFilter && matchSearch;
+    })
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  if(rows.length===0){
+    container.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">⬡</div>
+      <div class="empty-title">${registry.length===0?'No Serials Issued Yet':'No Results Found'}</div>
+      <div class="empty-sub">${registry.length===0?'Serials appear here at the moment of order.':'Try a different search or filter.'}</div>
+    </div>`;
+    return;
+  }
+  container.innerHTML=`
+    <table>
+      <thead><tr>
+        <th>Date</th><th>Order Ref</th><th>Metal</th><th>Specification</th>
+        <th style="text-align:center">Qty</th><th>Serial Range</th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(r=>`
+          <tr>
+            <td class="td-date">${formatDate(r.date)}</td>
+            <td class="td-ref">${r.ref}</td>
+            <td class="td-sym">${r.sym}</td>
+            <td class="td-spec">${r.spec}</td>
+            <td class="td-qty">${r.qty}</td>
+            <td class="td-serials">
+              <span class="range">${r.serialFrom}</span>
+              ${r.qty>1?`<br><span style="color:var(--muted);font-size:9px">through</span><br><span class="range">${r.serialTo}</span>`:''}
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function loadRegistry(){
+  showLoading();
+
+  // Google Sheets is the single source of truth — no localStorage
+  const scriptId = 'ev-jsonp-' + Date.now();
+
+  const timeout = setTimeout(() => {
+    cleanup();
+    document.getElementById('tableContainer').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⟳</div>
+        <div class="empty-title" style="color:var(--mid)">Registry Unavailable</div>
+        <div class="empty-sub">Could not reach the Element Vault registry. Please try again shortly.</div>
+      </div>`;
+  }, 10000);
+
+  function cleanup(){
+    clearTimeout(timeout);
+    const el = document.getElementById(scriptId);
+    if(el) el.remove();
+    delete window.__evRegistryCallback;
+  }
+
+  window.__evRegistryCallback = function(data){
+    cleanup();
+    registry = (data.ok && Array.isArray(data.rows)) ? data.rows : [];
+    if(!data.ok) console.warn('Registry response error:', data);
+    renderStats(); renderFilters(); renderTable();
+  };
+
+  const script = document.createElement('script');
+  script.id    = scriptId;
+  script.src   = APPS_SCRIPT_URL + '?action=getRegistry&callback=__evRegistryCallback';
+  script.onerror = function(){
+    cleanup();
+    registry = [];
+    document.getElementById('tableContainer').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⬡</div>
+        <div class="empty-title" style="color:var(--mid)">Registry Unavailable</div>
+        <div class="empty-sub">Unable to connect. Please try again shortly.</div>
+      </div>`;
+  };
+  document.head.appendChild(script);
+}
+
+document.getElementById('searchInput').addEventListener('input', renderTable);
+loadRegistry();
+</script>
+</body>
+</html>
